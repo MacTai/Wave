@@ -1,0 +1,32 @@
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/router';
+
+export default function MovieDetails() {
+  const router = useRouter();
+  const { id } = router.query;
+  const [movie, setMovie] = useState(null);
+
+  useEffect(() => {
+    if (id) {
+      const fetchMovie = async () => {
+        const res = await axios.get(`http://www.omdbapi.com/?i=${id}&apikey=${process.env.OMDB_API_KEY}`);
+        setMovie(res.data);
+      };
+      fetchMovie();
+    }
+  }, [id]);
+
+  if (!movie) return <div>Carregando...</div>;
+
+  return (
+    <div>
+      <h1>{movie.Title} ({movie.Year})</h1>
+      <img src={movie.Poster} alt={movie.Title} />
+      <p>Diretor: {movie.Director}</p>
+      <p>Elenco: {movie.Actors}</p>
+      <p>Sinopse: {movie.Plot}</p>
+      <p>Avaliação: {movie.imdbRating}</p>
+    </div>
+  );
+}
