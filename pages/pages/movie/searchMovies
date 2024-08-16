@@ -1,0 +1,7 @@
+const [page, setPage] = useState(1);
+const [filters, setFilters] = useState({ year: '', genre: '', type: '' });
+
+const searchMovies = async () => {
+  const res = await axios.get(`http://www.omdbapi.com/?s=${query}&page=${page}&y=${filters.year}&type=${filters.type}&apikey=${process.env.OMDB_API_KEY}`);
+  setMovies(res.data.Search || []);
+};
