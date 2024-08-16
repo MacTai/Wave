@@ -1,0 +1,35 @@
+import { useState } from 'react';
+import axios from 'axios';
+
+export default function Home() {
+  const [query, setQuery] = useState('');
+  const [movies, setMovies] = useState([]);
+
+  const searchMovies = async () => {
+    const res = await axios.get(`http://www.omdbapi.com/?s=${query}&apikey=${process.env.OMDB_API_KEY}`);
+    setMovies(res.data.Search || []);
+  };
+
+  return (
+    <div>
+      <h1>Consulta de Filmes</h1>
+      <input 
+        type="text" 
+        value={query} 
+        onChange={(e) => setQuery(e.target.value)} 
+        placeholder="Digite o título do filme" 
+      />
+      <button onClick={searchMovies}>Buscar</button>
+      <ul>
+        {movies.map(movie => (
+          <li key={movie.imdbID}>
+            <a href={`/movie/${movie.imdbID}`}>
+              <img src={movie.Poster} alt={movie.Title} />
+              <h2>{movie.Title} ({movie.Year})</h2>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
